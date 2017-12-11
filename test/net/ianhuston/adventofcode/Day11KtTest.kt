@@ -7,10 +7,10 @@ class Day11KtTest {
 
     @Test
     fun testFindNumberOfSteps() {
-        assertEquals(3, findNumberOfSteps("ne,ne,ne"))
-        assertEquals(0, findNumberOfSteps("ne,ne,sw,sw"))
-        assertEquals(2, findNumberOfSteps("ne,ne,s,s"))
-        assertEquals(3, findNumberOfSteps("se,sw,se,sw,sw"))
+        assertEquals(Pair(3,3), findNumberOfSteps("ne,ne,ne"))
+        assertEquals(Pair(0,2), findNumberOfSteps("ne,ne,sw,sw"))
+        assertEquals(Pair(2,2), findNumberOfSteps("ne,ne,s,s"))
+        assertEquals(Pair(3,3), findNumberOfSteps("se,sw,se,sw,sw"))
     }
 
     @Test

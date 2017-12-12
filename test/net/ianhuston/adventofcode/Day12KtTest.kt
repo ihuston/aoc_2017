@@ -7,7 +7,7 @@ import kotlin.math.exp
 class Day12KtTest {
 
     @Test
-    fun testFollowConnections() {
+    fun testCountConnections() {
         val input = mapOf(0 to listOf(2),
                 1 to listOf(1),
                 2 to listOf(0, 3, 4),
@@ -16,7 +16,7 @@ class Day12KtTest {
                 5 to listOf(6),
                 6 to listOf(4, 5))
 
-        assertEquals(6, followConnections(input, 0))
+        assertEquals(6, countConnectionsSeen(input, 0))
     }
 
     @Test
@@ -43,5 +43,34 @@ class Day12KtTest {
     @Test
     fun testParseSingleLine() {
         assertEquals(Pair(0, listOf(2)), parseSingleLine("0 <-> 2"))
+    }
+
+    @Test
+    fun testCountTwoGroups() {
+        val input = mapOf(0 to listOf(2),
+                1 to listOf(1),
+                2 to listOf(0, 3, 4),
+                3 to listOf(2, 4),
+                4 to listOf(2, 3, 6),
+                5 to listOf(6),
+                6 to listOf(4, 5))
+
+        assertEquals(2, countGroups(input))
+    }
+
+    @Test
+    fun testCountThreeGroups() {
+        val input = mapOf(0 to listOf(2),
+                1 to listOf(1),
+                2 to listOf(0, 3, 4),
+                3 to listOf(2, 4),
+                4 to listOf(2, 3, 6),
+                5 to listOf(6),
+                6 to listOf(4, 5),
+                7 to listOf(8,9),
+                8 to listOf(7),
+                9 to listOf(7))
+
+        assertEquals(3, countGroups(input))
     }
 }

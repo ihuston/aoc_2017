@@ -21,4 +21,12 @@ class Day17KtTest {
         assertEquals(Pair(listOf(0, 5, 7, 2, 4, 3, 8, 6, 1), 6),
                 forwardAndInsert(Pair(listOf(0, 5, 7, 2, 4, 3, 6, 1), 2), 3))
     }
+
+    @Test
+    fun testForwardOnly() {
+        assertEquals(1, forwardOnly(0, 1, 3))
+        assertEquals(1, forwardOnly(1, 2, 3))
+        assertEquals(2, forwardOnly(1, 3, 3))
+        assertEquals(6, forwardOnly(2, 8, 3))
+    }
 }

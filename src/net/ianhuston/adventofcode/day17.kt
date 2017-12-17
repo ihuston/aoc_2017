@@ -5,11 +5,17 @@ fun main(args: Array<String>) {
 }
 
 fun spinlock(step: Int): Int {
-    var buffer = Pair(listOf(0), 0)
-    for (i in 1..2017) {
-        buffer = forwardAndInsert(buffer, step)
+    var newIndex = 0
+    var secondSlot = 0
+    for (i in 1..50_000_000) {
+        newIndex = forwardOnly(newIndex, i, step)
+        if (newIndex == 1) secondSlot = i
     }
-    return buffer.first[(buffer.second+1) % buffer.first.size]
+    return secondSlot
+}
+
+fun forwardOnly(current: Int, count: Int, step: Int): Int {
+    return ((current + step) % count) + 1
 }
 
 fun forwardAndInsert(buffer: Pair<List<Int>, Int>, step: Int): Pair<List<Int>, Int> {

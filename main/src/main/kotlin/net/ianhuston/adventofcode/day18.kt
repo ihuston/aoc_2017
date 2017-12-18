@@ -9,10 +9,9 @@ fun main(args: Array<String>) {
 
 fun day18(inputText: String): Long? {
     val instructions = parseDay18Input(inputText)
-    val registers = ('a'..'z').associate { Pair(it, 0L) }.toMutableMap()
-    val pointer = 0
-    val p = Program(registers, instructions, pointer)
-    val retval = p.mainLoop()
+    val p0 = Day18Program(instructions = instructions)
+    p0.registers['p'] = 0
+    val retval = p0.mainLoop()
     return retval
 }
 
@@ -21,9 +20,9 @@ fun parseDay18Input(inputText: String): List<String> {
     return inputText.lines().filter { it != "" }
 }
 
-data class Program(var registers: MutableMap<Char, Long>,
-                   var instructions: List<String>,
-                   var pointer: Int) {
+data class Day18Program(var registers: MutableMap<Char, Long> = ('a'..'z').associate { Pair(it, 0L) }.toMutableMap(),
+                        var instructions: List<String> = emptyList(),
+                        var pointer: Int = 0) {
 
     fun mainLoop(): Long? {
         var rcvValue: Long? = null
@@ -54,27 +53,27 @@ data class Program(var registers: MutableMap<Char, Long>,
         return rcvValue
     }
 
-    fun snd(r: Long): Program {
+    fun snd(r: Long): Day18Program {
         registers['!'] = r
         return this
     }
 
-    fun set(x: Char, n: Long): Program {
+    fun set(x: Char, n: Long): Day18Program {
         registers[x] = n
         return this
     }
 
-    fun add(x: Char, n: Long): Program {
+    fun add(x: Char, n: Long): Day18Program {
         registers[x] = (registers[x] ?: 0) + n
         return this
     }
 
-    fun mul(x: Char, n: Long): Program {
+    fun mul(x: Char, n: Long): Day18Program {
         registers[x] = (registers[x] ?: 0) * n
         return this
     }
 
-    fun mod(x: Char, n: Long): Program{
+    fun mod(x: Char, n: Long): Day18Program {
         registers[x] = (registers[x] ?: 0) % n
         return this
     }

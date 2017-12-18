@@ -1,4 +1,4 @@
-package net.ianhuston.advent
+package net.ianhuston.adventofcode
 
 import org.junit.Assert.*
 import org.junit.Test
@@ -46,7 +46,7 @@ class Day7KtTest {
                 "fwft" to Tower("fwft", emptyList<String>(), 61),
                 "tknk" to Tower("tknk", listOf("ugml", "padx", "fwft"), 72))
 
-        assertEquals(expected, parseInput(input))
+        assertEquals(expected, parseDay7Input(input))
     }
 
     @Test

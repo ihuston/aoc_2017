@@ -1,4 +1,4 @@
-package net.ianhuston.advent
+package net.ianhuston.adventofcode
 
 import java.io.File
 import java.net.URL

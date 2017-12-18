@@ -5,54 +5,54 @@ import org.junit.Before
 import org.junit.Test
 
 class Day18KtTest {
-    lateinit var myProgram: Program
+    lateinit var myProgram: Day18Program
 
     @Before
     fun setup() {
         val registers = ('a'..'z').associate { Pair(it, 0L) }.toMutableMap()
-        myProgram = Program(registers = registers, instructions = emptyList(),
+        myProgram = Day18Program(registers = registers, instructions = emptyList(),
                 pointer = 0)
     }
 
     @Test
     fun testSnd() {
-        myProgram.registers['x'] = 128
-        assertEquals(128, myProgram.snd(myProgram.getValue('x')).registers['!'])
+        myProgram.registers['x'] = 128L
+        assertEquals(128L, myProgram.snd(myProgram.getValue('x')).registers['!'])
     }
 
     @Test
     fun testSet() {
-        myProgram.registers['c'] = 100
-        myProgram.registers['d'] = 1
-        assertEquals(100, myProgram.set('d', myProgram.getValue('c')).registers['d'])
+        myProgram.registers['c'] = 100L
+        myProgram.registers['d'] = 1L
+        assertEquals(100L, myProgram.set('d', myProgram.getValue('c')).registers['d'])
     }
 
     @Test
     fun testAdd() {
-        myProgram.registers['c'] = 100
-        myProgram.registers['d'] = 1
-        assertEquals(101, myProgram.add('d', myProgram.getValue('c')).registers['d'])
+        myProgram.registers['c'] = 100L
+        myProgram.registers['d'] = 1L
+        assertEquals(101L, myProgram.add('d', myProgram.getValue('c')).registers['d'])
     }
 
     @Test
     fun testMul() {
-        myProgram.registers['c'] = 100
-        myProgram.registers['d'] = 1
-        assertEquals(100, myProgram.mul('d', myProgram.getValue('c')).registers['d'])
+        myProgram.registers['c'] = 100L
+        myProgram.registers['d'] = 1L
+        assertEquals(100L, myProgram.mul('d', myProgram.getValue('c')).registers['d'])
     }
 
     @Test
     fun testMod() {
-        myProgram.registers['c'] = 10
-        myProgram.registers['d'] = 21
-        assertEquals(1, myProgram.mod('d', myProgram.getValue('c')).registers['d'])
+        myProgram.registers['c'] = 10L
+        myProgram.registers['d'] = 21L
+        assertEquals(1L, myProgram.mod('d', myProgram.getValue('c')).registers['d'])
     }
 
     @Test
     fun testRcv() {
-        myProgram.registers['c'] = 1
+        myProgram.registers['c'] = 1L
         myProgram.snd(myProgram.getValue('c'))
-        assertEquals(1, myProgram.rcv(myProgram.getValue('c')))
+        assertEquals(1L, myProgram.rcv(myProgram.getValue('c')))
         assertNull(myProgram.rcv(myProgram.getValue('d')))
     }
 
@@ -62,19 +62,19 @@ class Day18KtTest {
                 "add a 2",
                 "mul a a",
                 "mod a 5")
-        myProgram.registers['c'] = 1
-        myProgram.registers['d'] = 2
+        myProgram.registers['c'] = 1L
+        myProgram.registers['d'] = 2L
         myProgram.jgz(myProgram.getValue('c'), myProgram.getValue('d').toInt())
         assertEquals(1, myProgram.pointer)
     }
 
     @Test
     fun testGetValue() {
-        myProgram.registers['c'] = 100
-        assertEquals(100, myProgram.getValue('c'))
-        assertEquals(100, myProgram.getValue(100))
-        assertEquals(100, myProgram.getValue("100"))
-        assertEquals(100, myProgram.getValue("c"))
+        myProgram.registers['c'] = 100L
+        assertEquals(100L, myProgram.getValue('c'))
+        assertEquals(100L, myProgram.getValue(100L))
+        assertEquals(100L, myProgram.getValue("100"))
+        assertEquals(100L, myProgram.getValue("c"))
     }
 
     @Test
@@ -90,7 +90,7 @@ class Day18KtTest {
                 "set a 1\n" +
                 "jgz a -2"
 
-        assertEquals(4, day18(inputText))
+        assertEquals(4L, day18(inputText))
 
     }
 

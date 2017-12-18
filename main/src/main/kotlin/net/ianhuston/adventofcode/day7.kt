@@ -1,4 +1,4 @@
-package net.ianhuston.advent
+package net.ianhuston.adventofcode
 
 import java.io.File
 
@@ -10,7 +10,7 @@ fun main(args: Array<String>) {
 data class Tower(val base: String, val subTowerNames: List<String>, val baseWeight: Int)
 
 fun bottomProgram(input: String): String {
-    return findUnequal(parseInput(input)).base
+    return findUnequal(parseDay7Input(input)).base
 }
 
 fun findBottom(input: Map<String, Tower>): Tower {
@@ -20,7 +20,7 @@ fun findBottom(input: Map<String, Tower>): Tower {
     return roots.values.first()
 }
 
-fun parseInput(input: String): Map<String, Tower> {
+fun parseDay7Input(input: String): Map<String, Tower> {
     return input.split("\n").filter { it != "" }.associate{ Pair(splitLine(it).base, splitLine(it)) }
 }
 

@@ -1,4 +1,4 @@
-package net.ianhuston.advent
+package net.ianhuston.adventofcode
 
 import org.junit.Assert.*
 import org.junit.Test

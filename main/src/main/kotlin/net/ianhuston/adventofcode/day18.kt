@@ -1,18 +1,44 @@
 package net.ianhuston.adventofcode
 
+import kotlinx.coroutines.experimental.channels.Channel
+import kotlinx.coroutines.experimental.channels.ReceiveChannel
+import kotlinx.coroutines.experimental.channels.SendChannel
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.runBlocking
 import java.io.File
 
-fun main(args: Array<String>) {
+fun main(args: Array<String>) = runBlocking {
     val inputText = File("/Users/ihuston/code/aoc_2017/data/day18.txt").readText()
-    println(day18(inputText))
+    val mainjob = launch { day18(inputText) }
+    mainjob.join()
 }
 
-fun day18(inputText: String): Long? {
+suspend fun day18(inputText: String): Long? {
     val instructions = parseDay18Input(inputText)
     val p0 = Day18Program(instructions = instructions)
     p0.registers['p'] = 0
-    val retval = p0.mainLoop()
-    return retval
+    p0.registers['#'] = 0
+    val p1 = Day18Program(instructions = instructions)
+    p1.registers['p'] = 1
+    p1.registers['#'] = 1
+    println("Starting jobs")
+    val toP0Channel = Channel<Long>(1000)
+    val toP1Channel = Channel<Long>(1000)
+    val retval0 = launch {
+        println("Job 0")
+        println("P0 sent " + p0.mainLoop(toP0Channel, toP1Channel) + " times.")
+
+    }
+    val retval1 = launch {
+        p1.mainLoop(toP1Channel, toP0Channel)
+    }
+
+    retval0.join()
+    retval1.join()
+
+
+    return 0L
+
 }
 
 
@@ -24,37 +50,35 @@ data class Day18Program(var registers: MutableMap<Char, Long> = ('a'..'z').assoc
                         var instructions: List<String> = emptyList(),
                         var pointer: Int = 0) {
 
-    fun mainLoop(): Long? {
-        var rcvValue: Long? = null
+    suspend fun mainLoop(inChannel: ReceiveChannel<Long>,
+                 outChannel: SendChannel<Long>): Int {
+        var count = 0
 
         while ((0 <= pointer) and (pointer < instructions.size)) {
             val elements = instructions[pointer].split(" ")
             val first = elements[1]
             val second = if (elements.size >= 3) getValue(elements[2]) else 0
-            println(elements)
+            println("${registers['#']}: " + elements)
             when(elements[0]) {
-                "snd" -> snd(getValue(first))
+                "snd" -> {
+                    snd(first[0], outChannel)
+                    count++
+                    println("${registers['#']} has sent " + count + " times.")
+                }
                 "set" -> set(first[0], second)
                 "add" -> add(first[0], second)
                 "mul" -> mul(first[0], second)
                 "mod" -> mod(first[0], second)
-                "rcv" -> {
-                    rcvValue = rcv(getValue(first))
-                    if (getValue(first) != 0L) {
-                        println("first = ${getValue(first)}")
-                        println("RCV value = $rcvValue")
-                        return rcvValue
-                    }
-                }
+                "rcv" -> rcv(first[0], inChannel)
                 "jgz" -> jgz(getValue(first), second.toInt())
             }
             pointer++
         }
-        return rcvValue
+        return count
     }
 
-    fun snd(r: Long): Day18Program {
-        registers['!'] = r
+    suspend fun snd(x: Char, channel: SendChannel<Long>): Day18Program {
+        channel.send(registers[x] ?: 0)
         return this
     }
 
@@ -78,8 +102,9 @@ data class Day18Program(var registers: MutableMap<Char, Long> = ('a'..'z').assoc
         return this
     }
 
-    fun rcv(n: Long): Long? {
-        return if (n != 0L) registers['!'] else null
+    suspend fun rcv(x: Char, channel: ReceiveChannel<Long>) {
+        println("${registers['#']}: Waiting to receive")
+        registers[x] = channel.receive()
     }
 
     fun jgz(a: Long, inc: Int) {

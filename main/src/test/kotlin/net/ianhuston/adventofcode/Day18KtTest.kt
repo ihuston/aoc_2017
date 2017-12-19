@@ -1,5 +1,8 @@
 package net.ianhuston.adventofcode
 
+import kotlinx.coroutines.experimental.channels.Channel
+import kotlinx.coroutines.experimental.channels.sendBlocking
+import kotlinx.coroutines.experimental.runBlocking
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +20,12 @@ class Day18KtTest {
     @Test
     fun testSnd() {
         myProgram.registers['x'] = 128L
-        assertEquals(128L, myProgram.snd(myProgram.getValue('x')).registers['!'])
+        val channel = Channel<Long>(10)
+        val result = runBlocking {
+            myProgram.snd('x', channel)
+            channel.receive()
+        }
+        assertEquals(128L, result)
     }
 
     @Test
@@ -51,9 +59,12 @@ class Day18KtTest {
     @Test
     fun testRcv() {
         myProgram.registers['c'] = 1L
-        myProgram.snd(myProgram.getValue('c'))
-        assertEquals(1L, myProgram.rcv(myProgram.getValue('c')))
-        assertNull(myProgram.rcv(myProgram.getValue('d')))
+        val channel = Channel<Long>(10)
+        runBlocking {
+            channel.send(101L)
+            myProgram.rcv('c', channel)
+        }
+        assertEquals(101L, myProgram.registers['c'])
     }
 
     @Test
@@ -77,22 +88,22 @@ class Day18KtTest {
         assertEquals(100L, myProgram.getValue("c"))
     }
 
-    @Test
-    fun testRun() {
-        val inputText = "set a 1\n" +
-                "add a 2\n" +
-                "mul a a\n" +
-                "mod a 5\n" +
-                "snd a\n" +
-                "set a 0\n" +
-                "rcv a\n" +
-                "jgz a -1\n" +
-                "set a 1\n" +
-                "jgz a -2"
-
-        assertEquals(4L, day18(inputText))
-
-    }
+//    @Test
+//    fun testRunPart1() {
+//        val inputText = "set a 1\n" +
+//                "add a 2\n" +
+//                "mul a a\n" +
+//                "mod a 5\n" +
+//                "snd a\n" +
+//                "set a 0\n" +
+//                "rcv a\n" +
+//                "jgz a -1\n" +
+//                "set a 1\n" +
+//                "jgz a -2"
+//
+//        assertEquals(4L, day18(inputText))
+//
+//    }
 
     @Test
     fun testParse() {
